@@ -193,20 +193,30 @@
       margin-bottom: 32px;
     }
     .ad-btn {
+      position: relative;
       flex: 1;
       display: flex;
       align-items: center;
       gap: 10px;
       min-width: 0;
       padding: 10px 12px;
-      border: 1px solid var(--line);
+      border: 1px solid transparent;
       border-radius: 10px;
       text-decoration: none;
-      transition: opacity .1s, border-color .15s;
+      transition: opacity .1s, transform .1s;
+      overflow: hidden;
     }
     .ad-btn:active {
-      opacity: 0.7;
-      border-color: var(--ink);
+      opacity: 0.75;
+      transform: scale(0.98);
+    }
+    .ad-btn.coral {
+      background: #fff1ec;
+      border-color: #ffd9cc;
+    }
+    .ad-btn.teal {
+      background: #eafbf6;
+      border-color: #c9f0e3;
     }
     .ad-btn img {
       width: 34px;
@@ -215,10 +225,13 @@
       object-fit: cover;
       flex-shrink: 0;
       display: block;
+      background: #fff;
     }
     .ad-btn span {
+      flex: 1;
+      min-width: 0;
       font-size: 12.5px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--ink);
       line-height: 1.25;
       overflow: hidden;
@@ -227,19 +240,28 @@
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
     }
+    .ad-arrow {
+      flex-shrink: 0;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .ad-btn.coral .ad-arrow { color: #ff6b45; }
+    .ad-btn.teal .ad-arrow { color: #1fa583; }
   </style>
 </head>
 <body>
   <div class="screen">
     <div class="ad-eyebrow">Sponsored</div>
     <div class="ad-row">
-      <a class="ad-btn" href="#" id="ad1">
-        <img src="src/CupHolder.png" alt="">
+      <a class="ad-btn coral" href="testing.com" target="_blank" rel="noopener noreferrer" id="ad1">
+        <img src="src/image1.png" alt="">
         <span>Cup Holder</span>
+        <span class="ad-arrow">↗</span>
       </a>
-      <a class="ad-btn" href="#" id="ad2">
-        <img src="src/IslandElephantBag.png" alt="">
+      <a class="ad-btn teal" href="testing.com" target="_blank" rel="noopener noreferrer" id="ad2">
+        <img src="src/image2.png" alt="">
         <span>Delivery Bag</span>
+        <span class="ad-arrow">↗</span>
       </a>
     </div>
 

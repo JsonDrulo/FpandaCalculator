@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#fafafa">
+  <title>Remit Calculator</title>
+  <style>
+    :root {
+      --ink: #1c1c1c;
+      --muted: #9a9a9a;
+      --line: #e6e6e6;
+      --bg: #fafafa;
+      --accent: #1c1c1c;
+      --mono: 'SF Mono', 'Roboto Mono', monospace;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      overflow-y: auto;
+      height: 100%;
+      -ms-overflow-style: none;  
+      scrollbar-width: none;  
+    }
+    html::-webkit-scrollbar, 
+    body::-webkit-scrollbar,
+    .screen::-webkit-scrollbar {
+      display: none;
+    }
+
+    .screen {
+      max-width: 420px;
+      margin: 0 auto;
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-y: auto;
+      -ms-overflow-style: none;  
+      scrollbar-width: none;  
+    }
+    h1 {
+      font-size: 19px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0 0 36px;
+      letter-spacing: -0.01em;
+    }
+    .field {
+      margin-bottom: 24px;
+    }
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .field-wrap {
+      display: flex;
+      align-items: baseline;
+      border-bottom: 1.5px solid var(--line);
+      padding-bottom: 8px;
+      transition: border-color .15s;
+    }
+    .field-wrap.focus {
+      border-color: var(--ink);
+    }
+    .currency {
+      font-size: 17px;
+      color: var(--muted);
+      margin-right: 6px;
+    }
+    input[type="number"] {
+      flex: 1;
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 4px 0;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ink);
+      font-family: var(--mono);
+      -webkit-appearance: none;
+    }
+    input::placeholder {
+      color: #d2d2d2;
+      font-weight: 500;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+    .calc-btn {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--accent);
+      margin-top: 8px;
+      cursor: pointer;
+      transition: opacity .1s;
+    }
+    .calc-btn:active {
+      opacity: 0.75;
+    }
+    .results {
+      display: none;
+      margin-top: 36px;
+      animation: fade .25s ease;
+    }
+    @keyframes fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 10px 0;
+      font-size: 13px;
+      color: #777;
+    }
+    .row .value {
+      font-family: var(--mono);
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .row.net {
+      border-top: 1px solid var(--line);
+      margin-top: 2px;
+      padding-top: 14px;
+    }
+    .row.net .label,
+    .row.net .value {
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .final {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      text-align: left;
+    }
+    .final-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .final-amount {
+      font-family: var(--mono);
+      font-size: 44px;
+      font-weight: 700;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .final-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .final-note.zero {
+      color: #1f8a5f;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <h1>Remit Calculator</h1>
+
+    <div class="field">
+      <label for="wallet">Wallet balance</label>
+      <div class="field-wrap" id="walletWrap">
+        <span class="currency">₱</span>
+        <input type="number" id="wallet" placeholder="1766.03" inputmode="decimal">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="payments">Current payments</label>
+      <div class="field-wrap" id="paymentsWrap">
+        <span class="currency">₱</span>
+        <input type="number" id="payments" placeholder="532.82" inputmode="decimal">
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculateRemit()">Calculate</button>
+
+    <div class="results" id="results">
+      <div class="row">
+        <span class="label">Gross earnings</span>
+        <span class="value" id="gross-display">₱0.00</span>
+      </div>
+      <div class="row">
+        <span class="label">2% tax</span>
+        <span class="value" id="tax-display">−₱0.00</span>
+      </div>
+      <div class="row net">
+        <span class="label">Net earnings</span>
+        <span class="value" id="net-display">₱0.00</span>
+      </div>
+      <div class="row">
+        <span class="label">Wallet debt</span>
+        <span class="value" id="debt-display">₱0.00</span>
+      </div>
+
+      <div class="final">
+        <div class="final-label">Pay at 7-Eleven</div>
+        <div class="final-amount" id="final-display">₱0</div>
+        <div class="final-note" id="final-note">Rounded up to the nearest peso</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    ['wallet', 'payments'].forEach(id => {
+      const input = document.getElementById(id);
+      const wrap = document.getElementById(id + 'Wrap');
+      input.addEventListener('focus', () => wrap.classList.add('focus'));
+      input.addEventListener('blur', () => wrap.classList.remove('focus'));
+    });
+
+    function calculateRemit() {
+      let walletInput = document.getElementById('wallet').value;
+      let paymentsInput = document.getElementById('payments').value;
+
+      let rawWallet = parseFloat(walletInput) || 0;
+      let rawPayments = parseFloat(paymentsInput) || 0;
+
+      let debt = Math.abs(rawWallet);
+
+      let tax = rawPayments * 0.02;
+      let netEarnings = rawPayments - tax;
+
+      let exactRemit = debt - netEarnings;
+
+      let finalRemit = exactRemit > 0 ? Math.ceil(exactRemit) : 0;
+
+      document.getElementById('gross-display').innerText = '₱' + rawPayments.toFixed(2);
+      document.getElementById('tax-display').innerText = '−₱' + tax.toFixed(2);
+      document.getElementById('net-display').innerText = '₱' + netEarnings.toFixed(2);
+      document.getElementById('debt-display').innerText = '₱' + debt.toFixed(2);
+      document.getElementById('final-display').innerText = '₱' + finalRemit;
+
+      const note = document.getElementById('final-note');
+      if (finalRemit === 0) {
+        note.textContent = 'Earnings cover the debt — nothing to pay';
+        note.classList.add('zero');
+      } else {
+        note.textContent = 'Rounded up to the nearest peso';
+        note.classList.remove('zero');
+      }
+
+      document.getElementById('results').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

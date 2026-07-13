@@ -7,11 +7,15 @@
   <title>Remit Calculator</title>
   <style>
     :root {
-      --ink: #1c1c1c;
-      --muted: #9a9a9a;
-      --line: #e6e6e6;
-      --bg: #fafafa;
-      --accent: #1c1c1c;
+      --ink: #211e19;
+      --muted: #6e6759;
+      --faint: #a89f8d;
+      --line: #ddd5c4;
+      --bg: #eae5d9;
+      --card: #f6f3ea;
+      --field-bg: #e4ded0;
+      --accent: #2b2822;
+      --bonus: #3f8f68;
       --mono: 'SF Mono', 'Roboto Mono', monospace;
     }
     * {
@@ -25,10 +29,10 @@
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
       overflow-y: auto;
       height: 100%;
-      -ms-overflow-style: none;  
-      scrollbar-width: none;  
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
-    html::-webkit-scrollbar, 
+    html::-webkit-scrollbar,
     body::-webkit-scrollbar,
     .screen::-webkit-scrollbar {
       display: none;
@@ -39,48 +43,147 @@
       margin: 0 auto;
       min-height: 100vh;
       min-height: 100dvh;
-      padding: 24px;
+      padding: 28px 20px 40px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       overflow-y: auto;
-      -ms-overflow-style: none;  
-      scrollbar-width: none;  
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
     h1 {
       font-size: 19px;
       font-weight: 700;
       color: var(--ink);
-      margin: 0 0 36px;
+      margin: 0 0 24px;
       letter-spacing: -0.01em;
     }
-    .field {
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    /* --- inputs --- */
+    .field-row {
+      display: flex;
+      gap: 16px;
       margin-bottom: 24px;
     }
+    .field {
+      flex: 1;
+      min-width: 0;
+    }
+    .field.grow-2 { flex: 1.6; }
     .field label {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       font-size: 12px;
       color: var(--muted);
       margin-bottom: 6px;
+      gap: 6px;
+    }
+    .field label .hint {
+      font-size: 10.5px;
+      color: var(--faint);
+      font-weight: 500;
+    }
+    .tooltip-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .tooltip-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1.3px solid var(--faint);
+      background: none;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color .15s, color .15s, background .15s;
+    }
+    .tooltip-icon:hover,
+    .tooltip-wrap.open .tooltip-icon {
+      border-color: var(--bonus);
+      color: var(--card);
+      background: var(--bonus);
+    }
+    .tooltip-bubble {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      right: -8px;
+      width: 190px;
+      background: var(--ink);
+      color: var(--card);
+      font-size: 11.5px;
+      font-weight: 500;
+      line-height: 1.45;
+      padding: 10px 12px;
+      border-radius: 10px;
+      text-align: left;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(4px);
+      transition: opacity .15s ease, transform .15s ease;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .tooltip-bubble::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      right: 10px;
+      border: 5px solid transparent;
+      border-top-color: var(--ink);
+    }
+    .tooltip-wrap:hover .tooltip-bubble,
+    .tooltip-wrap.open .tooltip-bubble {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
     .field-wrap {
       display: flex;
-      align-items: baseline;
-      border-bottom: 1.5px solid var(--line);
-      padding-bottom: 8px;
-      transition: border-color .15s;
+      align-items: center;
+      background: var(--field-bg);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      transition: border-color .15s, background .15s;
     }
     .field-wrap.focus {
       border-color: var(--ink);
+      background: var(--card);
+    }
+    .field-wrap.bonus.focus {
+      border-color: var(--bonus);
+      background: var(--card);
     }
     .currency {
-      font-size: 17px;
+      font-size: 16px;
       color: var(--muted);
-      margin-right: 6px;
+      margin-right: 5px;
+      white-space: nowrap;
+    }
+    .bonus .currency {
+      color: var(--bonus);
     }
     input[type="number"] {
       flex: 1;
       width: 100%;
+      min-width: 0;
       border: none;
       outline: none;
       background: transparent;
@@ -91,8 +194,10 @@
       font-family: var(--mono);
       -webkit-appearance: none;
     }
+    .field.grow-2 input[type="number"] { font-size: 20px; }
+    .field:not(.grow-2) input[type="number"] { font-size: 18px; }
     input::placeholder {
-      color: #d2d2d2;
+      color: var(--faint);
       font-weight: 500;
     }
     input::-webkit-outer-spin-button,
@@ -103,6 +208,11 @@
     input[type=number] {
       -moz-appearance: textfield;
     }
+
+    .field.wallet-field {
+      margin-bottom: 24px;
+    }
+
     .calc-btn {
       width: 100%;
       border: none;
@@ -119,9 +229,10 @@
     .calc-btn:active {
       opacity: 0.75;
     }
+
     .results {
       display: none;
-      margin-top: 36px;
+      margin-top: 20px;
       animation: fade .25s ease;
     }
     @keyframes fade {
@@ -132,7 +243,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      padding: 10px 0;
+      padding: 9px 0;
       font-size: 13px;
       color: #777;
     }
@@ -140,6 +251,9 @@
       font-family: var(--mono);
       color: var(--ink);
       font-weight: 600;
+    }
+    .row .value.bonus {
+      color: var(--bonus);
     }
     .row.net {
       border-top: 1px solid var(--line);
@@ -176,7 +290,7 @@
       margin-top: 6px;
     }
     .final-note.zero {
-      color: #1f8a5f;
+      color: var(--bonus);
       font-weight: 600;
     }
 
@@ -247,6 +361,68 @@
     }
     .ad-btn.coral .ad-arrow { color: #ff6b45; }
     .ad-btn.teal .ad-arrow { color: #1fa583; }
+
+    .faq-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 32px 0 12px;
+    }
+    .faq-section {
+      border-top: 1px solid var(--line);
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--line);
+    }
+    .faq-q {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: none;
+      border: none;
+      padding: 16px 2px;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .faq-icon {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--field-bg);
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 600;
+      transition: transform .2s ease, background .2s ease;
+    }
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+      background: var(--ink);
+      color: var(--card);
+    }
+    .faq-a {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .25s ease;
+    }
+    .faq-a p {
+      margin: 0 0 16px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--muted);
+      padding-right: 30px;
+    }
   </style>
 </head>
 <body>
@@ -267,25 +443,45 @@
 
     <h1>Remit Calculator</h1>
 
-    <div class="field">
-      <label for="wallet">Wallet</label>
-      <div class="field-wrap" id="walletWrap">
-        <span class="currency">₱</span>
-        <input type="number" id="wallet" placeholder="1766.03" inputmode="decimal">
+    <div class="card">
+      <div class="field wallet-field">
+        <label for="wallet">Wallet</label>
+        <div class="field-wrap" id="walletWrap">
+          <span class="currency">₱</span>
+          <input type="number" id="wallet" placeholder="1766.03" inputmode="decimal">
+        </div>
       </div>
+
+      <div class="field-row">
+        <div class="field grow-2">
+          <label for="payments">Payments</label>
+          <div class="field-wrap" id="paymentsWrap">
+            <span class="currency">₱</span>
+            <input type="number" id="payments" placeholder="532.82" inputmode="decimal">
+          </div>
+        </div>
+        <div class="field">
+          <label for="quest">Quest
+            <span class="tooltip-wrap" id="questTooltip">
+              <button type="button" class="tooltip-icon" aria-label="What is Quest bonus?">?</button>
+              <span class="tooltip-bubble">Quest bonus is extra pay from completed quests or incentives. It gets added on top of your Payments before tax.</span>
+            </span>
+          </label>
+          <div class="field-wrap bonus" id="questWrap">
+            <span class="currency">+₱</span>
+            <input type="number" id="quest" placeholder="0" inputmode="decimal">
+          </div>
+        </div>
+      </div>
+
+      <button class="calc-btn" onclick="calculateRemit()">Calculate</button>
     </div>
 
-    <div class="field">
-      <label for="payments">Payments</label>
-      <div class="field-wrap" id="paymentsWrap">
-        <span class="currency">₱</span>
-        <input type="number" id="payments" placeholder="532.82" inputmode="decimal">
+    <div class="results card" id="results">
+      <div class="row" id="quest-row">
+        <span class="label">Quest bonus</span>
+        <span class="value bonus" id="quest-display">+₱0.00</span>
       </div>
-    </div>
-
-    <button class="calc-btn" onclick="calculateRemit()">Calculate</button>
-
-    <div class="results" id="results">
       <div class="row">
         <span class="label">Gross earnings</span>
         <span class="value" id="gross-display">₱0.00</span>
@@ -309,10 +505,41 @@
         <div class="final-note" id="final-note">Rounded up to the nearest peso</div>
       </div>
     </div>
+
+    <div class="faq-title">Frequently Asked Questions</div>
+    <div class="faq-section">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Pwede ko na lang bang i-remit lahat para wala nang negative sa wallet?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Pwede, pero hindi mo agad makukuha nang buo ang sahod. Kailangan mo pang bumyahe para makuha ito.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Gaano ka-accurate ang calculation nito?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>100% accurate. Kung minsan, may sobrang kaunti dahil niroround up ang final amount para walang matirang negative sa wallet mo.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Anong requirements para sa "Quest"?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Kailangan yung acceptance rate mo ay above 90% (91%). kahit na na-achieve mona yung first quest, hindi ito papasok dahil hindi above 90% ang iyong acceptance rate</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
-    ['wallet', 'payments'].forEach(id => {
+    ['wallet', 'payments', 'quest'].forEach(id => {
       const input = document.getElementById(id);
       const wrap = document.getElementById(id + 'Wrap');
       input.addEventListener('focus', () => wrap.classList.add('focus'));
@@ -322,20 +549,30 @@
     function calculateRemit() {
       let walletInput = document.getElementById('wallet').value;
       let paymentsInput = document.getElementById('payments').value;
+      let questInput = document.getElementById('quest').value;
 
       let rawWallet = parseFloat(walletInput) || 0;
       let rawPayments = parseFloat(paymentsInput) || 0;
+      let rawQuest = parseFloat(questInput) || 0;
 
       let debt = Math.abs(rawWallet);
 
-      let tax = rawPayments * 0.02;
-      let netEarnings = rawPayments - tax;
+      let grossEarnings = rawPayments + rawQuest;
+      let tax = grossEarnings * 0.02;
+      let netEarnings = grossEarnings - tax;
 
       let exactRemit = debt - netEarnings;
-
       let finalRemit = exactRemit > 0 ? Math.ceil(exactRemit) : 0;
 
-      document.getElementById('gross-display').innerText = '₱' + rawPayments.toFixed(2);
+      const questRow = document.getElementById('quest-row');
+      if (rawQuest > 0) {
+        questRow.style.display = 'flex';
+        document.getElementById('quest-display').innerText = '+₱' + rawQuest.toFixed(2);
+      } else {
+        questRow.style.display = 'none';
+      }
+
+      document.getElementById('gross-display').innerText = '₱' + grossEarnings.toFixed(2);
       document.getElementById('tax-display').innerText = '−₱' + tax.toFixed(2);
       document.getElementById('net-display').innerText = '₱' + netEarnings.toFixed(2);
       document.getElementById('debt-display').innerText = '₱' + debt.toFixed(2);
@@ -351,6 +588,35 @@
       }
 
       document.getElementById('results').style.display = 'block';
+    }
+
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const answer = item.querySelector('.faq-a');
+      const isOpen = item.classList.contains('open');
+
+      if (isOpen) {
+        answer.style.maxHeight = '0px';
+        item.classList.remove('open');
+      } else {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    }
+
+    const questTooltip = document.getElementById('questTooltip');
+    if (questTooltip) {
+      const tooltipBtn = questTooltip.querySelector('.tooltip-icon');
+      tooltipBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        questTooltip.classList.toggle('open');
+      });
+      document.addEventListener('click', (e) => {
+        if (!questTooltip.contains(e.target)) {
+          questTooltip.classList.remove('open');
+        }
+      });
     }
   </script>
 </body>

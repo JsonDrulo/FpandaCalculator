@@ -448,7 +448,7 @@
         <label for="wallet">Wallet</label>
         <div class="field-wrap" id="walletWrap">
           <span class="currency">₱</span>
-          <input type="number" id="wallet" placeholder="1766.03" inputmode="decimal">
+          <input type="number" id="wallet" placeholder="-1766.03" inputmode="decimal">
         </div>
       </div>
 
@@ -544,6 +544,12 @@
       const wrap = document.getElementById(id + 'Wrap');
       input.addEventListener('focus', () => wrap.classList.add('focus'));
       input.addEventListener('blur', () => wrap.classList.remove('focus'));
+    });
+
+    document.getElementById('wallet').addEventListener('input', function() {
+      if (this.value && this.value > 0) {
+        this.value = -this.value;
+      }
     });
 
     function calculateRemit() {

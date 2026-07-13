@@ -538,7 +538,7 @@
     </div>
   </div>
 
-  <script>
+<script>
     ['wallet', 'payments', 'quest'].forEach(id => {
       const input = document.getElementById(id);
       const wrap = document.getElementById(id + 'Wrap');
@@ -555,14 +555,13 @@
       let rawPayments = parseFloat(paymentsInput) || 0;
       let rawQuest = parseFloat(questInput) || 0;
 
-      let debt = Math.abs(rawWallet);
+      let walletBalance = -Math.abs(rawWallet);
 
       let grossEarnings = rawPayments + rawQuest;
       let tax = grossEarnings * 0.02;
       let netEarnings = grossEarnings - tax;
 
-      let exactRemit = debt - netEarnings;
-      let finalRemit = exactRemit > 0 ? Math.ceil(exactRemit) : 0;
+      let remainingBalance = netEarnings + walletBalance;
 
       const questRow = document.getElementById('quest-row');
       if (rawQuest > 0) {
@@ -575,16 +574,26 @@
       document.getElementById('gross-display').innerText = '₱' + grossEarnings.toFixed(2);
       document.getElementById('tax-display').innerText = '−₱' + tax.toFixed(2);
       document.getElementById('net-display').innerText = '₱' + netEarnings.toFixed(2);
-      document.getElementById('debt-display').innerText = '₱' + debt.toFixed(2);
-      document.getElementById('final-display').innerText = '₱' + finalRemit;
+      document.getElementById('debt-display').innerText = '−₱' + Math.abs(walletBalance).toFixed(2);
 
-      const note = document.getElementById('final-note');
-      if (finalRemit === 0) {
-        note.textContent = 'Earnings cover the debt — nothing to pay';
-        note.classList.add('zero');
+      const finalLabel = document.querySelector('.final-label');
+      const finalAmount = document.getElementById('final-display');
+      const finalNote = document.getElementById('final-note');
+
+      if (remainingBalance < 0) {
+        let exactRemit = Math.abs(remainingBalance);
+        let finalRemit = Math.ceil(exactRemit);
+        finalLabel.innerText = 'Pay at 7-Eleven';
+        finalAmount.innerText = '₱' + finalRemit;
+        finalAmount.style.color = 'var(--ink)';
+        finalNote.textContent = 'Rounded up to the nearest peso';
+        finalNote.classList.remove('zero');
       } else {
-        note.textContent = 'Rounded up to the nearest peso';
-        note.classList.remove('zero');
+        finalLabel.innerText = 'Expected Payout';
+        finalAmount.innerText = '₱' + remainingBalance.toFixed(2);
+        finalAmount.style.color = 'var(--bonus)';
+        finalNote.textContent = 'Earnings covered your COD debt! This is your remaining payout.';
+        finalNote.classList.add('zero');
       }
 
       document.getElementById('results').style.display = 'block';

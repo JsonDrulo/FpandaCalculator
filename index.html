@@ -584,7 +584,6 @@
       }
     });
 
-    // Clear error state as soon as the user starts typing in a required field
     ['wallet', 'payments'].forEach(id => {
       document.getElementById(id).addEventListener('input', function() {
         clearFieldError(id);
@@ -621,7 +620,6 @@
       const walletEmpty = walletInput.trim() === '';
       const paymentsEmpty = paymentsInput.trim() === '';
 
-      // Reset previous error states first
       clearFieldError('wallet');
       clearFieldError('payments');
 
@@ -633,8 +631,6 @@
         if (walletEmpty && !paymentsEmpty) msg = 'Please fill in Wallet to calculate.';
         if (paymentsEmpty && !walletEmpty) msg = 'Please fill in Payments to calculate.';
         showFormWarning(msg);
-
-        // Don't calculate, hide any stale results
         document.getElementById('results').style.display = 'none';
         return;
       }

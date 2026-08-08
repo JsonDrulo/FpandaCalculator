@@ -16,6 +16,7 @@
       --field-bg: #e4ded0;
       --accent: #2b2822;
       --bonus: #3f8f68;
+      --danger: #c0392b;
       --mono: 'SF Mono', 'Roboto Mono', monospace;
     }
     * {
@@ -66,7 +67,6 @@
       box-shadow: 0 1px 2px rgba(0,0,0,0.03);
     }
 
-    /* --- inputs --- */
     .field-row {
       display: flex;
       gap: 16px;
@@ -171,6 +171,10 @@
       border-color: var(--bonus);
       background: var(--card);
     }
+    .field-wrap.error {
+      border-color: var(--danger);
+      background: #fdf1ef;
+    }
     .currency {
       font-size: 16px;
       color: var(--muted);
@@ -228,6 +232,19 @@
     }
     .calc-btn:active {
       opacity: 0.75;
+    }
+
+    .form-warning {
+      display: none;
+      color: var(--danger);
+      font-size: 12.5px;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 12px;
+      animation: fade .2s ease;
+    }
+    .form-warning.show {
+      display: block;
     }
 
     .results {
@@ -450,6 +467,7 @@
           <span class="currency">₱</span>
           <input type="number" id="wallet" placeholder="-1766.03" inputmode="decimal">
         </div>
+
       </div>
 
       <div class="field-row">
@@ -459,6 +477,7 @@
             <span class="currency">₱</span>
             <input type="number" id="payments" placeholder="532.82" inputmode="decimal">
           </div>
+
         </div>
         <div class="field">
           <label for="quest">Quest
@@ -475,6 +494,10 @@
       </div>
 
       <button class="calc-btn" onclick="calculateRemit()">Calculate</button>
+
+      <div class="form-warning" id="formWarning">
+        <span id="formWarningText">Please fill in Wallet and Payments to calculate.</span>
+      </div>
     </div>
 
     <div class="results card" id="results">
@@ -561,10 +584,62 @@
       }
     });
 
+    // Clear error state as soon as the user starts typing in a required field
+    ['wallet', 'payments'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function() {
+        clearFieldError(id);
+        if (document.getElementById('wallet').value.trim() !== '' &&
+            document.getElementById('payments').value.trim() !== '') {
+          hideFormWarning();
+        }
+      });
+    });
+
+    function setFieldError(id) {
+      document.getElementById(id + 'Wrap').classList.add('error');
+    }
+
+    function clearFieldError(id) {
+      document.getElementById(id + 'Wrap').classList.remove('error');
+    }
+
+    function showFormWarning(text) {
+      const warning = document.getElementById('formWarning');
+      document.getElementById('formWarningText').textContent = text;
+      warning.classList.add('show');
+    }
+
+    function hideFormWarning() {
+      document.getElementById('formWarning').classList.remove('show');
+    }
+
     function calculateRemit() {
       let walletInput = document.getElementById('wallet').value;
       let paymentsInput = document.getElementById('payments').value;
       let questInput = document.getElementById('quest').value;
+
+      const walletEmpty = walletInput.trim() === '';
+      const paymentsEmpty = paymentsInput.trim() === '';
+
+      // Reset previous error states first
+      clearFieldError('wallet');
+      clearFieldError('payments');
+
+      if (walletEmpty || paymentsEmpty) {
+        if (walletEmpty) setFieldError('wallet');
+        if (paymentsEmpty) setFieldError('payments');
+
+        let msg = 'Please fill in Wallet and Payments to calculate.';
+        if (walletEmpty && !paymentsEmpty) msg = 'Please fill in Wallet to calculate.';
+        if (paymentsEmpty && !walletEmpty) msg = 'Please fill in Payments to calculate.';
+        showFormWarning(msg);
+
+        // Don't calculate, hide any stale results
+        document.getElementById('results').style.display = 'none';
+        return;
+      }
+
+      hideFormWarning();
 
       let rawWallet = parseFloat(walletInput) || 0;
       let rawPayments = parseFloat(paymentsInput) || 0;

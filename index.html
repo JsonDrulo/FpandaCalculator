@@ -86,6 +86,88 @@
       margin-bottom: 6px;
       gap: 6px;
     }
+    .field label.inline {
+      justify-content: flex-start;
+    }
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(33, 30, 25, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .2s ease, visibility .2s;
+      z-index: 100;
+    }
+    .modal.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-box {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      max-height: 90vh;
+      max-height: 90dvh;
+      overflow-y: auto;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px 16px 20px;
+      transform: translateY(8px) scale(0.98);
+      transition: transform .2s ease;
+    }
+    .modal.open .modal-box {
+      transform: none;
+    }
+    .modal-img {
+      width: 100%;
+      height: 200px;
+      border-radius: 12px;
+      background: var(--field-bg);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .modal-img img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .modal-title {
+      margin: 0 0 6px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .modal-text {
+      margin: 0;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+    .modal-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(246, 243, 234, 0.92);
+      color: var(--ink);
+      font-size: 18px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
     .field label .hint {
       font-size: 10.5px;
       color: var(--faint);
@@ -295,11 +377,23 @@
       margin-bottom: 4px;
     }
     .final-amount {
+      display: inline-block;
+      cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+      transition: opacity .1s, transform .1s;
       font-family: var(--mono);
       font-size: 44px;
       font-weight: 700;
       color: var(--ink);
       letter-spacing: -0.02em;
+    }
+    .final-amount:active {
+      opacity: 0.6;
+      transform: scale(0.98);
+    }
+    .final-amount.copied {
+      color: var(--bonus) !important;
     }
     .final-note {
       font-size: 12px;
@@ -310,74 +404,6 @@
       color: var(--bonus);
       font-weight: 600;
     }
-
-    .ad-eyebrow {
-      font-size: 10px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin: 0 0 10px;
-    }
-    .ad-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 32px;
-    }
-    .ad-btn {
-      position: relative;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-      padding: 10px 12px;
-      border: 1px solid transparent;
-      border-radius: 10px;
-      text-decoration: none;
-      transition: opacity .1s, transform .1s;
-      overflow: hidden;
-    }
-    .ad-btn:active {
-      opacity: 0.75;
-      transform: scale(0.98);
-    }
-    .ad-btn.coral {
-      background: #fff1ec;
-      border-color: #ffd9cc;
-    }
-    .ad-btn.teal {
-      background: #eafbf6;
-      border-color: #c9f0e3;
-    }
-    .ad-btn img {
-      width: 34px;
-      height: 34px;
-      border-radius: 7px;
-      object-fit: cover;
-      flex-shrink: 0;
-      display: block;
-      background: #fff;
-    }
-    .ad-btn span {
-      flex: 1;
-      min-width: 0;
-      font-size: 12.5px;
-      font-weight: 700;
-      color: var(--ink);
-      line-height: 1.25;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-    .ad-arrow {
-      flex-shrink: 0;
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .ad-btn.coral .ad-arrow { color: #ff6b45; }
-    .ad-btn.teal .ad-arrow { color: #1fa583; }
 
     .faq-title {
       font-size: 13px;
@@ -444,25 +470,13 @@
 </head>
 <body>
   <div class="screen">
-    <div class="ad-eyebrow">Delivery accessories</div>
-    <div class="ad-row">
-      <a class="ad-btn coral" href="https://vt.tiktok.com/ZS96pPg5H8X3A-oKUvr/" target="_blank" rel="noopener noreferrer" id="ad1">
-        <img src="src/CupHolder.png" alt="">
-        <span>Cup Holder</span>
-        <span class="ad-arrow">↗</span>
-      </a>
-      <a class="ad-btn teal" href="https://vt.tiktok.com/ZS96p5FWBsvPB-4mU7J/" target="_blank" rel="noopener noreferrer" id="ad2">
-        <img src="src/IslandElephantBag.png" alt="">
-        <span>Delivery Bag</span>
-        <span class="ad-arrow">↗</span>
-      </a>
-    </div>
-
     <h1>Remit Calculator</h1>
 
     <div class="card">
       <div class="field wallet-field">
-        <label for="wallet">Wallet</label>
+        <label for="wallet" class="inline">Wallet
+          <button type="button" class="tooltip-icon" data-help="wallet" aria-label="What is Wallet?">?</button>
+        </label>
         <div class="field-wrap" id="walletWrap">
           <span class="currency">₱</span>
           <input type="number" id="wallet" placeholder="-1766.03" inputmode="decimal">
@@ -472,7 +486,9 @@
 
       <div class="field-row">
         <div class="field grow-2">
-          <label for="payments">Payments</label>
+          <label for="payments" class="inline">Payments
+            <button type="button" class="tooltip-icon" data-help="payments" aria-label="What is Payments?">?</button>
+          </label>
           <div class="field-wrap" id="paymentsWrap">
             <span class="currency">₱</span>
             <input type="number" id="payments" placeholder="532.82" inputmode="decimal">
@@ -524,7 +540,7 @@
 
       <div class="final">
         <div class="final-label">Pay at 7-Eleven</div>
-        <div class="final-amount" id="final-display">₱0</div>
+        <div class="final-amount" id="final-display" role="button" tabindex="0" data-copy="">₱0</div>
         <div class="final-note" id="final-note">Rounded up to the nearest peso</div>
       </div>
     </div>
@@ -567,6 +583,15 @@
           <p>Pwede mo na lang hintayin na ma-transfer ang payment sa wallet mo, o i-remit ang laman ng wallet mo gamit ang GCash o sa 7-Eleven</p>
         </div>
       </div>
+    </div>
+  </div>
+
+  <div class="modal" id="helpModal" aria-hidden="true">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button type="button" class="modal-close" id="modalClose" aria-label="Close">×</button>
+      <div class="modal-img"><img id="modalImg" src="" alt=""></div>
+      <h3 class="modal-title" id="modalTitle"></h3>
+      <p class="modal-text" id="modalText"></p>
     </div>
   </div>
 
@@ -671,19 +696,58 @@
         let finalRemit = Math.ceil(exactRemit);
         finalLabel.innerText = 'Pay at 7-Eleven';
         finalAmount.innerText = '₱' + finalRemit;
+        finalAmount.dataset.copy = finalRemit;
         finalAmount.style.color = 'var(--ink)';
         finalNote.textContent = 'Rounded up to the nearest peso';
         finalNote.classList.remove('zero');
       } else {
         finalLabel.innerText = 'Expected Payout';
         finalAmount.innerText = '₱' + remainingBalance.toFixed(2);
+        finalAmount.dataset.copy = remainingBalance.toFixed(2);
         finalAmount.style.color = 'var(--bonus)';
         finalNote.textContent = 'Earnings covered your COD debt! This is your remaining payout.';
         finalNote.classList.add('zero');
       }
 
+      finalAmount.classList.remove('copied');
       document.getElementById('results').style.display = 'block';
     }
+
+    const finalDisplay = document.getElementById('final-display');
+    let copyTimer;
+
+    async function copyAmount() {
+      const text = finalDisplay.dataset.copy;
+      if (!text) return;
+
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (err) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+
+      finalDisplay.classList.add('copied');
+      clearTimeout(copyTimer);
+      copyTimer = setTimeout(() => {
+        finalDisplay.classList.remove('copied');
+      }, 2000);
+    }
+
+    finalDisplay.addEventListener('click', copyAmount);
+    finalDisplay.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        copyAmount();
+      }
+    });
 
     function toggleFaq(btn) {
       const item = btn.closest('.faq-item');
@@ -698,6 +762,55 @@
         answer.style.maxHeight = answer.scrollHeight + 'px';
       }
     }
+
+    const helpContent = {
+      wallet: {
+        img: 'src/WalletHelp.png',
+        title: 'Wallet',
+        text: 'Ito ang negative balance sa wallet mo mula sa COD orders. Ilagay dito ang eksaktong amount na nakikita mo sa app.'
+      },
+      payments: {
+        img: 'src/PaymentsHelp.png',
+        title: 'Payments',
+        text: 'Ito ang total na kinita mo mula sa mga delivery. Ilagay dito ang eksaktong amount na nakikita mo sa app.'
+      }
+    };
+
+    const helpModal = document.getElementById('helpModal');
+
+    function openHelp(key) {
+      const data = helpContent[key];
+      if (!data) return;
+      const img = document.getElementById('modalImg');
+      img.src = data.img;
+      img.alt = data.title;
+      document.getElementById('modalTitle').textContent = data.title;
+      document.getElementById('modalText').textContent = data.text;
+      helpModal.classList.add('open');
+      helpModal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeHelp() {
+      helpModal.classList.remove('open');
+      helpModal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('[data-help]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openHelp(btn.dataset.help);
+      });
+    });
+    document.getElementById('modalClose').addEventListener('click', closeHelp);
+    helpModal.addEventListener('click', (e) => {
+      if (e.target === helpModal) closeHelp();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeHelp();
+    });
 
     const questTooltip = document.getElementById('questTooltip');
     if (questTooltip) {

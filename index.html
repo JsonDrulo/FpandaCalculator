@@ -539,7 +539,7 @@
       </div>
 
       <div class="final">
-        <div class="final-label">Pay at 7-Eleven</div>
+        <div class="final-label">Pay at 7-Eleven (Ire-remit mo)</div>
         <div class="final-amount" id="final-display" role="button" tabindex="0" data-copy="">₱0</div>
         <div class="final-note" id="final-note">Rounded up to the nearest peso</div>
       </div>
@@ -694,7 +694,7 @@
       if (remainingBalance < 0) {
         let exactRemit = Math.abs(remainingBalance);
         let finalRemit = Math.ceil(exactRemit);
-        finalLabel.innerText = 'Pay at 7-Eleven';
+        finalLabel.innerText = 'Pay at 7-Eleven (Ire-remit mo)';
         finalAmount.innerText = '₱' + finalRemit;
         finalAmount.dataset.copy = finalRemit;
         finalAmount.style.color = 'var(--ink)';

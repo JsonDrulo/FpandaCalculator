@@ -1,8 +1,8 @@
-const CACHE_NAME = 'remit-calc-images-v1';
+const CACHE_NAME = 'remit-calc-images-v3';
 
 const ASSETS_TO_CACHE = [
-  'src/CupHolder.png',
-  'src/IslandElephantBag.png'
+  'src/WalletHelp.png',
+  'src/PaymentsHelp.png'
 ];
 
 self.addEventListener('install', (event) => {

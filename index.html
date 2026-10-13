@@ -415,19 +415,61 @@
       color: var(--muted);
       margin-top: 6px;
     }
+    .final-note:empty {
+      display: none;
+    }
     .final-note.zero {
       color: var(--bonus);
       font-weight: 600;
     }
-
-    .faq-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin: 32px 0 12px;
+    .tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      flex-shrink: 0;
+      margin: 16px -20px 0;
+      padding: 0 20px 4px;
+      overflow-y: hidden;
+      touch-action: pan-x pan-y;
+      overscroll-behavior-x: contain;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+    .tab {
+      flex: 0 0 auto;
+      white-space: nowrap;
+      border: 1.5px solid var(--line);
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 8px 18px;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background .15s, color .15s, border-color .15s;
+    }
+    .tab.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--card);
+    }
+    .tab-panel {
+      margin-top: 12px;
+      animation: fade .2s ease;
+    }
+    .tab-text {
+      margin: 0;
+      padding: 14px 2px;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
     .faq-section {
       border-top: 1px solid var(--line);
     }
@@ -561,49 +603,19 @@
       <div class="final">
         <div class="final-label">Pay at 7-Eleven (Ire-remit mo)</div>
         <div class="final-amount" id="final-display" role="button" tabindex="0" data-copy="">₱0</div>
-        <div class="final-note" id="final-note">Rounded up to the nearest peso</div>
+        <div class="final-note" id="final-note"></div>
       </div>
     </div>
 
-    <div class="faq-title">Frequently Asked Questions</div>
-    <div class="faq-section">
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>Pwede ko na lang bang i-remit lahat para wala nang negative sa wallet?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Pwede, pero hindi mo agad makukuha nang buo ang sahod. Kailangan mo pang bumyahe para makuha ito.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>Gaano ka-accurate ang calculation nito?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>100% accurate. Kung minsan, may sobrang kaunti dahil niroround up ang final amount para walang matirang negative sa wallet mo.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>Anong requirements para sa "Quest"?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Kailangan yung acceptance rate mo ay 90% at kailangan ang no show mo ay 0. Kung ang acceptance rate mo ay 89% or may no show ka na isa, Hindi mo ito makukuha.</p>
-        </div>
-      </div>
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          <span>Paano kung mas mataas yung wallet amount kesa sa payments?</span>
-          <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Pwede mo na lang hintayin na ma-transfer ang payment sa wallet mo, o i-remit ang laman ng wallet mo gamit ang GCash o sa 7-Eleven</p>
-        </div>
-      </div>
+    <div class="tabs" id="tabs" role="tablist">
+      <button type="button" class="tab" data-tab="faq" role="tab" aria-selected="false">Faq</button>
+      <button type="button" class="tab" data-tab="fakebook" role="tab" aria-selected="false">Fake Book</button>
+      <button type="button" class="tab" data-tab="csunavailable" role="tab" aria-selected="false">CS Unavailable</button>
+      <button type="button" class="tab" data-tab="acceptance" role="tab" aria-selected="false">Acceptance Rate</button>
+      <button type="button" class="tab" data-tab="tipidhacks" role="tab" aria-selected="false">Tipid Hacks</button>
     </div>
+
+    <div id="tabPanel"></div>
   </div>
 
   <div class="modal" id="helpModal" aria-hidden="true">
@@ -718,7 +730,7 @@
         finalAmount.innerText = '₱' + finalRemit;
         finalAmount.dataset.copy = finalRemit;
         finalAmount.style.color = 'var(--ink)';
-        finalNote.textContent = 'Rounded up to the nearest peso';
+        finalNote.textContent = '';
         finalNote.classList.remove('zero');
       } else {
         finalLabel.innerText = 'Expected Payout';
@@ -782,6 +794,167 @@
         answer.style.maxHeight = answer.scrollHeight + 'px';
       }
     }
+
+    const FAKEBOOK = [
+      {
+        q: 'Ano ang gagawin ko kapag na fake book ako?',
+        a: 'Kapag nasa exact location ka na ni customer, pindutin mo yung "Customer Unavailable" button (Hindi lalabas ang "Customer Unavailable" button kapag wala ka sa exact location). I-click mo yung "Chat" tapos i-type mo "Im here", tapos i-click mo yung "Notify". Mag-antay ka ng 10 mins. Pagkatapos ng 10 mins, i-chat mo na yung support at sabihin mong wala si customer.'
+      }
+    ];
+
+    const CSUNAVAILABLE = [
+      {
+        q: 'Ano ang gagawin ko kapag wala si customer?',
+        a: 'Kapag nasa exact location ka na ni customer, pindutin mo yung "Customer Unavailable" button (Hindi lalabas ang "Customer Unavailable" button kapag wala ka sa exact location). I-click mo yung "Chat" tapos i-type mo "Im here", tapos i-click mo yung "Notify". Mag-antay ka ng 10 mins. Pagkatapos ng 10 mins, i-chat mo na yung support at sabihin mong wala si customer.'
+      },
+      {
+        q: 'Paano kung bayad na yung pagkain pero wala si customer? Hindi ma-kontak si customer at hindi nag rereply sa chat',
+        a: 'Kapag nasa exact location ka na ni customer, pindutin mo yung "Customer Unavailable" button (Hindi lalabas ang "Customer Unavailable" button kapag wala ka sa exact location). I-click mo yung "Chat" tapos i-type mo "Im here", tapos i-click mo yung "Notify". Mag-antay ka ng 10 mins. Pagkatapos ng 10 mins, i-chat mo na yung support at sabihin mong wala si customer. ⚠️ Wag na wag mong iu-uwi ang pagkain dahil pwede kang masuspende or marestrict. Antayin ang sasabihin ng support kung ano ang gagawin sa order. ⚠️'
+      }
+    ];
+
+    const ACCEPTANCERATE = [
+      {
+        q: 'Paano ko mapapataas ang aking acceptance rate?',
+        a: 'Para mapataas ang acceptance rate mo, kailangan mong tanggapin ang mga order na pumapasok sa iyo. Huwag i-ignore o i-decline ang mga order. Mas mabuti kung itu-turn on mo ang Auto-accept orders.'
+      },
+      {
+        q: 'Bakit bumababa ang aking acceptance rate kahit na tinatanggap ko lahat ng order?',
+        a: 'Dahilan kung bakit bumababa ang acceptance rate mo. Mabagal ang internet (May pumasok na order tapos hindi mo na-accept dahil hindi lumabas sa screen mo). Panay ang "Pause Request" (Pwede ka mag PR kapag nakapag may success deliver kana). Kumuha ka ng schedule kahit na on-going session mo.'
+      }
+    ];
+
+    const TIPIDHACK = [
+      {
+        q: 'Ano magandang load? [Smart]',
+        a: '[PANALO10] May 300 MB + 60 Mins Calls to Mobile + 60 Texts valid for 1 day. ● [SURFSAYA20] May 600 MB: 150 MB Araw-araw for Tiktok, IG, FB, ML (300 MB) + 300 MB + Unli Calls & Texts for 2 days.'
+      },
+      {
+        q: 'Gutom at uhaw sa byahe?',
+        a: '[DALI] Tubig (6 Pesos) + Choco mucho (9 Pesos). Mas maganda kumain ng chocolate because it provides an immediate, highly efficient burst of physical and mental energy'
+      }
+    ]
+
+    const tabContent = {
+      faq: [
+        {
+          q: 'Pwede ko na lang bang i-remit lahat para wala nang negative sa wallet?',
+          a: 'Pwede, pero hindi mo agad makukuha nang buo ang sahod. Kailangan mo pang bumyahe para makuha ito.'
+        },
+        {
+          q: 'Gaano ka-accurate ang calculation nito?',
+          a: '100% accurate. Kung minsan, may sobrang kaunti dahil niroround up ang final amount para walang matirang negative sa wallet mo.'
+        },
+        {
+          q: 'Anong requirements para sa "Quest"?',
+          a: 'Kailangan yung acceptance rate mo ay 90% at kailangan ang no show mo ay 0. Kung ang acceptance rate mo ay 89% or may no show ka na isa, Hindi mo ito makukuha.'
+        },
+        {
+          q: 'Paano kung mas mataas yung wallet amount kesa sa payments?',
+          a: 'Pwede mo na lang hintayin na ma-transfer ang payment sa wallet mo, o i-remit ang laman ng wallet mo gamit ang GCash o sa 7-Eleven'
+        }
+      ],
+      fakebook: FAKEBOOK,
+      csunavailable: CSUNAVAILABLE,
+      acceptance: ACCEPTANCERATE,
+      tipidhacks: TIPIDHACK
+    };
+
+    const tabsEl = document.getElementById('tabs');
+    const tabPanel = document.getElementById('tabPanel');
+    let activeTab = null;
+
+    function buildPanel(key) {
+      const data = tabContent[key];
+      const wrap = document.createElement('div');
+      wrap.className = 'tab-panel';
+      wrap.setAttribute('role', 'tabpanel');
+
+      if (Array.isArray(data)) {
+        const section = document.createElement('div');
+        section.className = 'faq-section';
+        data.forEach(item => {
+          const faqItem = document.createElement('div');
+          faqItem.className = 'faq-item';
+
+          const q = document.createElement('button');
+          q.type = 'button';
+          q.className = 'faq-q';
+          q.addEventListener('click', () => toggleFaq(q));
+
+          const qText = document.createElement('span');
+          qText.textContent = item.q;
+          const icon = document.createElement('span');
+          icon.className = 'faq-icon';
+          icon.textContent = '+';
+          q.append(qText, icon);
+
+          const a = document.createElement('div');
+          a.className = 'faq-a';
+          const p = document.createElement('p');
+          p.textContent = item.a;
+          a.appendChild(p);
+
+          faqItem.append(q, a);
+          section.appendChild(faqItem);
+        });
+        wrap.appendChild(section);
+      } else {
+        const p = document.createElement('p');
+        p.className = 'tab-text';
+        p.textContent = data;
+        wrap.appendChild(p);
+      }
+      return wrap;
+    }
+
+    function selectTab(key) {
+      tabsEl.querySelectorAll('.tab').forEach(btn => {
+        const on = btn.dataset.tab === key;
+        btn.classList.toggle('active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+
+      tabPanel.textContent = '';
+      activeTab = key;
+      if (key) tabPanel.appendChild(buildPanel(key));
+    }
+
+    selectTab('faq');
+
+    (function enableDragScroll(el) {
+      let down = false, startX = 0, startLeft = 0, moved = false;
+      el.addEventListener('mousedown', (e) => { down = true; moved = false; startX = e.pageX; startLeft = el.scrollLeft; });
+      window.addEventListener('mouseup', () => { down = false; });
+      window.addEventListener('mousemove', (e) => {
+        if (!down) return;
+        const dx = e.pageX - startX;
+        if (Math.abs(dx) > 4) moved = true;
+        el.scrollLeft = startLeft - dx;
+      });
+      el.addEventListener('click', (e) => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+      el.addEventListener('wheel', (e) => {
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { el.scrollLeft += e.deltaY; e.preventDefault(); }
+      }, { passive: false });
+    })(document.getElementById('tabs'));
+
+    function scrollTabIntoView(btn) {
+      const pad = 100;
+      const b = btn.getBoundingClientRect();
+      const t = tabsEl.getBoundingClientRect();
+      if (b.left < t.left + pad) {
+        tabsEl.scrollBy({ left: b.left - t.left - pad, behavior: 'smooth' });
+      } else if (b.right > t.right - pad) {
+        tabsEl.scrollBy({ left: b.right - t.right + pad, behavior: 'smooth' });
+      }
+    }
+
+    tabsEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.tab');
+      if (!btn) return;
+      if (activeTab !== btn.dataset.tab) selectTab(btn.dataset.tab);
+      scrollTabIntoView(btn);
+    });
 
     const helpContent = {
       wallet: {

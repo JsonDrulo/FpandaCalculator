@@ -154,6 +154,7 @@
       font-size: 13.5px;
       line-height: 1.55;
       color: var(--muted);
+      white-space: pre-line;
     }
     .modal-close {
       position: absolute;
@@ -468,6 +469,7 @@
       font-size: 13.5px;
       line-height: 1.55;
       color: var(--muted);
+      white-space: pre-line;
     }
 
     .faq-section {
@@ -522,6 +524,7 @@
       line-height: 1.55;
       color: var(--muted);
       padding-right: 30px;
+      white-space: pre-line; /* makes \n show as real line breaks */
     }
   </style>
 </head>
@@ -797,19 +800,19 @@
 
     const FAKEBOOK = [
       {
-        q: 'Ano ang gagawin ko kapag na fake book ako?',
+        q: 'Ano ang gagawin ko kapag na-fakebook ako?',
         a: 'Kapag nasa exact location ka na ni customer, pindutin mo yung "Customer Unavailable" button (Hindi lalabas ang "Customer Unavailable" button kapag wala ka sa exact location). I-click mo yung "Chat" tapos i-type mo "Im here", tapos i-click mo yung "Notify". Mag-antay ka ng 10 mins. Pagkatapos ng 10 mins, i-chat mo na yung support at sabihin mong wala si customer.'
       }
     ];
 
     const CSUNAVAILABLE = [
       {
-        q: 'Ano ang gagawin ko kapag wala si customer?',
+        q: 'Ano ang gagawin ko kapag wala ang customer?',
         a: 'Kapag nasa exact location ka na ni customer, pindutin mo yung "Customer Unavailable" button (Hindi lalabas ang "Customer Unavailable" button kapag wala ka sa exact location). I-click mo yung "Chat" tapos i-type mo "Im here", tapos i-click mo yung "Notify". Mag-antay ka ng 10 mins. Pagkatapos ng 10 mins, i-chat mo na yung support at sabihin mong wala si customer.'
       },
       {
-        q: 'Paano kung bayad na yung pagkain pero wala si customer? Hindi ma-kontak si customer at hindi nag rereply sa chat',
-        a: 'Kapag nasa exact location ka na ni customer, pindutin mo yung "Customer Unavailable" button (Hindi lalabas ang "Customer Unavailable" button kapag wala ka sa exact location). I-click mo yung "Chat" tapos i-type mo "Im here", tapos i-click mo yung "Notify". Mag-antay ka ng 10 mins. Pagkatapos ng 10 mins, i-chat mo na yung support at sabihin mong wala si customer. ⚠️ Wag na wag mong iu-uwi ang pagkain dahil pwede kang masuspende or marestrict. Antayin ang sasabihin ng support kung ano ang gagawin sa order. ⚠️'
+        q: 'Paano kung bayad na ang pagkain pero wala ang customer? Hindi siya makontak at hindi rin sumasagot sa chat.',
+        a: 'Kapag nasa exact location ka na ni customer, pindutin mo yung "Customer Unavailable" button (Hindi lalabas ang "Customer Unavailable" button kapag wala ka sa exact location). I-click mo yung "Chat" tapos i-type mo "Im here", tapos i-click mo yung "Notify". Mag-antay ka ng 10 mins. Pagkatapos ng 10 mins, i-chat mo na yung support at sabihin mong wala si customer.\n\nWag na wag mong iu-uwi ang pagkain dahil pwede kang masuspende or marestrict. Antayin ang sasabihin ng support kung ano ang gagawin sa order.'
       }
     ];
 
@@ -819,19 +822,19 @@
         a: 'Para mapataas ang acceptance rate mo, kailangan mong tanggapin ang mga order na pumapasok sa iyo. Huwag i-ignore o i-decline ang mga order. Mas mabuti kung itu-turn on mo ang Auto-accept orders.'
       },
       {
-        q: 'Bakit bumababa ang aking acceptance rate kahit na tinatanggap ko lahat ng order?',
-        a: 'Dahilan kung bakit bumababa ang acceptance rate mo. Mabagal ang internet (May pumasok na order tapos hindi mo na-accept dahil hindi lumabas sa screen mo). Panay ang "Pause Request" (Pwede ka mag PR kapag nakapag may success deliver kana). Kumuha ka ng schedule kahit na on-going session mo.'
+        q: 'Bakit bumababa ang aking acceptance rate kahit tinatanggap ko naman ang lahat ng order?',
+        a: 'Mga Dahilan Kung Bakit Bumababa ang Iyong Acceptance Rate\n\n1. Mabagal ang Internet\nMay pumasok na order pero hindi mo ito na-accept dahil hindi lumabas sa screen mo.\n\n2. Madalas Gumamit ng Pause Request (PR)\nMaaaring makaapekto ito sa pagtanggap mo ng mga order. Mas mainam na mag-PR pagkatapos mong makapag-deliver.\n\n3. Pagkuha ng Schedule Habang May Ongoing Session\nKumuha ka ng bagong schedule kahit may kasalukuyan ka pang session.'
       }
     ];
 
     const TIPIDHACK = [
       {
-        q: 'Ano magandang load? [Smart]',
-        a: '[PANALO10] May 300 MB + 60 Mins Calls to Mobile + 60 Texts valid for 1 day. ● [SURFSAYA20] May 600 MB: 150 MB Araw-araw for Tiktok, IG, FB, ML (300 MB) + 300 MB + Unli Calls & Texts for 2 days.'
+        q: 'Anong load ang sulit sa budget? [Smart]',
+        a: '[PANALO10] May 300 MB + 60 Mins Calls to Mobile + 60 Texts valid for 1 day.\n\n[SURFSAYA20] May 600 MB: 150 MB Araw-araw for Tiktok, IG, FB, ML (300 MB) + 300 MB + Unli Calls & Texts for 2 days.'
       },
       {
         q: 'Gutom at uhaw sa byahe?',
-        a: '[DALI] Tubig (6 Pesos) + Choco mucho (9 Pesos). Mas maganda kumain ng chocolate because it provides an immediate, highly efficient burst of physical and mental energy'
+        a: '[DALI] Tubig (6 Pesos) + Choco mucho (9 Pesos).\nMas maganda kumain ng chocolate because it provides an immediate, highly efficient burst of physical and mental energy'
       }
     ]
 

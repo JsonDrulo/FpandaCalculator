@@ -57,6 +57,38 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+    .forum-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 16px;
+      padding: 12px 14px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--ink);
+      text-decoration: none;
+      transition: opacity .1s, border-color .15s;
+    }
+    .forum-btn:hover { border-color: var(--bonus); }
+    .forum-btn:active { opacity: 0.75; }
+    .forum-btn:focus-visible { outline: 2px solid var(--bonus); outline-offset: 2px; }
+    .forum-icon {
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      border-radius: 10px;
+      background: var(--accent);
+      color: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .forum-icon svg { width: 20px; height: 20px; }
+    .forum-text { flex: 1; min-width: 0; }
+    .forum-title { font-size: 14.5px; font-weight: 700; }
+    .forum-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .forum-arrow { width: 18px; height: 18px; color: var(--faint); flex-shrink: 0; }
     h1 {
       font-size: 19px;
       font-weight: 700;
@@ -524,13 +556,24 @@
       line-height: 1.55;
       color: var(--muted);
       padding-right: 30px;
-      white-space: pre-line; /* makes \n show as real line breaks */
+      white-space: pre-line;
     }
   </style>
 </head>
 <body>
   <div class="screen">
     <h1>Remit Calculator</h1>
+
+    <a class="forum-btn" href="https://web.facebook.com/share/g/1Dtn9Y3SSH/" target="_blank" rel="noopener noreferrer">
+      <span class="forum-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      </span>
+      <span class="forum-text">
+        <div class="forum-title">Facebook Group</div>
+        <div class="forum-sub">Join our riders community</div>
+      </span>
+      <svg class="forum-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+    </a>
 
     <div class="card">
       <div class="field wallet-field">
